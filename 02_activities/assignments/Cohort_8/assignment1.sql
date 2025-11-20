@@ -28,11 +28,11 @@ filtered by customer IDs between 8 and 10 (inclusive) using either:
 	2.  one condition using BETWEEN
 */
 -- option 1
-SELECT customer_id, product_id,
+SELECT *,
 	(quantity*cost_to_customer_per_qty) as price
 	FROM customer_purchases
 	WHERE customer_id >= 8
-	OR custmer_id <= 10;
+	AND customer_id <= 10;
 
 -- option 2
 
@@ -56,12 +56,14 @@ FROM product
 /* 2. We want to flag all of the different types of pepper products that are sold at the market. 
 add a column to the previous query called pepper_flag that outputs a 1 if the product_name 
 contains the word “pepper” (regardless of capitalization), and otherwise outputs 0. */
-
 SELECT product_id,product_name,
-CASE WHEN product_name ='%epper%' THEN '1'
+CASE WHEN product_qty_type = 'unit' THEN 'unit'
+      ELSE 'bulk'
+	  END AS prod_qty_type_condensed
+CASE WHEN LOWER(product_name) LIKE '%pepper%' THEN '1'
      ELSE '0'
 	 END AS pepper_flag
-FROM product
+FROM product;
 
 --JOIN
 /* 1. Write a query that INNER JOINs the vendor table to the vendor_booth_assignments table on the 
